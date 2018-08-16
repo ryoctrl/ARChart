@@ -6,15 +6,25 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 
+
 public class Socket : MonoBehaviour {
 
-	private string OHLC_ENDPOINT = "https://api.cryptowat.ch/markets/bitflyer/btcusd/ohlc";
+	private string interval = "60";
+	
+	private string OHLC_ENDPOINT = "https://api.cryptowat.ch/markets/bitflyer/btcfxjpy/ohlc?period=60";
+
+	public GameObject candlePrefab;
     
     public Text label;
 	// Use this for initialization
 	void Start () {
-		StartCoroutine(GetOHLC());
+		OHLC_ENDPOINT += interval;
+		StartCoroutine(generateChart());
 		label.text = "";
+	}
+
+	IEnumerator generateChart() {
+		yield return GetOHLC();
 	}
 
 	IEnumerator GetOHLC() {
@@ -28,28 +38,8 @@ public class Socket : MonoBehaviour {
             if (request.responseCode == 200) {
                 // UTF8文字列として取得する
                 string text = request.downloadHandler.text;
+				
 				parseOHLCDatas(text);
-				/*
-				Dictionary<string, object> json = Json.Deserialize(text) as Dictionary<string, object>;
-				json.forEach((key, value) => {
-					Debug.Log(key);
-					Debug.Log(value);
-				});
-				Dictionary<string, object> timeJson = (Dictionary<string, object>) json["result"];
-				// double[][] timetable = timeJson["14400"] as double[][];
-				// Debug.Log(timetable);
-				string timetableStr = timeJson["14400"] as string;
-				Debug.Log(timetableStr);
-				//Dictionary<string, object> timeJson = Json.Deserialize(json["result"])
-				//Debug.Log(json["result"]);
-				*/
-				/*
-				Dictionary<string, double[][]> candle = Json.deserialize(text)(Dictionary<string, double[][]>)json["result"];
-				double[][] ohlcList = candle["14400"];
-				double open = ohlcList[0][0];
-				*/
-				//Debug.Log (open);
-				Debug.Log(text);
  
                 // バイナリデータとして取得する
                 byte[] results = request.downloadHandler.data;
@@ -64,7 +54,7 @@ public class Socket : MonoBehaviour {
 		int startArrayIndex = responseText.IndexOf("[[") + 2;
 		int endArrayIndex = responseText.IndexOf("]]");
 
-		double[][] ohlcDatas = new double[500][];
+		double[][] ohlcDatas = new double[1000][];
 		double[] data = new double[7];
 		int dataCount = 0;
 		int ohlcCount = 0;
@@ -85,6 +75,49 @@ public class Socket : MonoBehaviour {
 			} else {
 				num += responseText[i];
 			}
+		}
+
+		double[][] ohlc72 = new double[72][];
+		int counter = 71;
+		for(int i = ohlcDatas.Length - 1; i >= 0; i-- ) {
+			if(ohlcDatas[i] == null) continue;
+			ohlc72[counter] = ohlcDatas[i];
+			counter--;
+			if(counter == -1) break;
+		}
+
+		ohlcDatas = ohlc72;
+
+		double highest = 0.0;
+		double lowest = 114514191981.0;
+
+		int correctCount = 1;
+		foreach(double[] ohlc in ohlcDatas) {
+			if(ohlc == null) break;
+			if(ohlc[2] > highest) highest = ohlc[2];
+			if(ohlc[3] < lowest) lowest = ohlc[3];
+			correctCount++;
+		}
+
+		double diff = (highest - lowest) * 0.05;
+		highest += diff;
+		lowest -= diff;
+
+		GameObject candle = null;
+
+		Vector3 pos = transform.position;
+
+		foreach (double[] ohlc in ohlcDatas) {
+			if(ohlc == null) break;
+			candle = Instantiate(candlePrefab, pos, transform.rotation) as GameObject;
+			CandleStick candleComponent = candle.GetComponent<CandleStick>();
+			candleComponent.highest = highest;
+			candleComponent.lowest = lowest;
+			candleComponent.open = ohlc[1];
+			candleComponent.high = ohlc[2];
+			candleComponent.low = ohlc[3];
+			candleComponent.close = ohlc[4];
+			pos.x += 0.3f;
 		}
 		return ohlcDatas;
 	}
