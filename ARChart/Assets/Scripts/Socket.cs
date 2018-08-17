@@ -15,12 +15,10 @@ public class Socket : MonoBehaviour {
 
 	public GameObject candlePrefab;
     
-    public Text label;
 	// Use this for initialization
 	void Start () {
 		OHLC_ENDPOINT += interval;
 		StartCoroutine(generateChart());
-		label.text = "";
 	}
 
 	IEnumerator generateChart() {
@@ -111,7 +109,8 @@ public class Socket : MonoBehaviour {
 			if(ohlc == null) break;
 			candle = Instantiate(candlePrefab, pos, transform.rotation);
 			candle.name = ohlc[0].ToString();
-			candle.transform.parent = transform;
+//			candle.transform.parent = transform;
+			candle.transform.SetParent(transform, false);
 			//candle.transform.localScale = new Vector3(50, 50, 50);
 			CandleStick candleComponent = candle.GetComponent<CandleStick>();
 			candleComponent.highest = highest;
@@ -123,8 +122,9 @@ public class Socket : MonoBehaviour {
 			pos.x += 0.3f;
 		}
 		this.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
-		pos = transform.position;
-		transform.position=new Vector3(pos.x,pos.y-1.3f,pos.z);
+		Vector3 parentPos = this.transform.position;
+		parentPos.y -= 1;
+		this.transform.position　= parentPos;
 		return ohlcDatas;
 	}
 }
