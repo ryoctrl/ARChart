@@ -80,8 +80,8 @@ MonoBehaviour:
     overrideState: 0
     value: 0
   brightness:
-    overrideState: 0
-    value: -30
+    overrideState: 1
+    value: -68.6
   postExposure:
     overrideState: 0
     value: 0
@@ -1335,13 +1335,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48a79b01ea5641d4aa6daa2e23605641, type: 3}
   m_Name: Bloom
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   enabled:
     overrideState: 1
     value: 1
   intensity:
     overrideState: 1
-    value: 53.21
+    value: 35
   threshold:
     overrideState: 0
     value: 1
