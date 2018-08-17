@@ -37,7 +37,8 @@ public class Socket : MonoBehaviour {
                 // UTF8文字列として取得する
                 string text = request.downloadHandler.text;
 				
-				parseOHLCDatas(text);
+				double[][] ohlcDatas = parseOHLCDatas(text);
+				instantiateChartObject(ohlcDatas);
  
                 // バイナリデータとして取得する
                 byte[] results = request.downloadHandler.data;
@@ -48,7 +49,6 @@ public class Socket : MonoBehaviour {
 	}
 
 	private double[][] parseOHLCDatas(string responseText) {
-		Debug.Log(responseText);
 		int startArrayIndex = responseText.IndexOf("[[") + 2;
 		int endArrayIndex = responseText.IndexOf("]]");
 
@@ -74,6 +74,10 @@ public class Socket : MonoBehaviour {
 				num += responseText[i];
 			}
 		}
+		return ohlcDatas;
+	}
+
+	private void instantiateChartObject(double[][] ohlcDatas) {
 
 		double[][] ohlc72 = new double[72][];
 		int counter = 71;
@@ -125,6 +129,5 @@ public class Socket : MonoBehaviour {
 		Vector3 parentPos = this.transform.position;
 		parentPos.y -= 1;
 		this.transform.position　= parentPos;
-		return ohlcDatas;
 	}
 }
