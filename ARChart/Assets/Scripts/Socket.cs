@@ -128,6 +128,7 @@ public class Socket : MonoBehaviour {
 		this.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
 		Vector3 parentPos = this.transform.position;
 		parentPos.y -= 1;
+		parentPos.x -= (pos.x/2)*0.02f;
 		this.transform.position　= parentPos;
 	}
 }

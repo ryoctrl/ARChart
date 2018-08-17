@@ -39,11 +39,11 @@ public class CandleStick : MonoBehaviour {
 		beard.transform.localScale = new Vector3(0.05f, beardHeight, 0.05f);
 
 		Vector3 bodyPos = body.transform.position;
-		bodyPos.y = bodyYPos;
+		bodyPos.y = bodyYPos-1;
 		body.transform.position = bodyPos;
 
 		Vector3 beardPos = beard.transform.position;
-		beardPos.y = beardYPos;
+		beardPos.y = beardYPos-1;
 		beard.transform.position = beardPos;
 
 		changeCandleColor();
