@@ -11,6 +11,11 @@ public class CandleStick : MonoBehaviour {
 	public double low;
 	public double close;
 
+	public double highestTotal;
+	public double lowestTotal;
+
+	public double total;
+
 	public GameObject body;
 
 	public GameObject beard;
@@ -45,6 +50,14 @@ public class CandleStick : MonoBehaviour {
 		Vector3 beardPos = beard.transform.position;
 		beardPos.y = beardYPos-1;
 		beard.transform.position = beardPos;
+
+		double depth = 0.1f;
+		double plusDepth = highestTotal - total;
+		double minusDepth = total - lowestTotal;
+
+		Vector3 myPos = transform.position;
+		myPos.z = 0.5f + (float) (depth - (2 * depth * plusDepth / (plusDepth + minusDepth)));
+		transform.position = myPos;
 
 		changeCandleColor();
 	}

@@ -9,9 +9,10 @@ using UnityEngine.Networking;
 
 public class Socket : MonoBehaviour {
 
-	private string interval = "60";
+	private string interval = "14400";
+	private float size = 0.05f;
 	
-	private string OHLC_ENDPOINT = "https://api.cryptowat.ch/markets/bitflyer/btcfxjpy/ohlc?periods=60";
+	private string OHLC_ENDPOINT = "https://api.cryptowat.ch/markets/bitflyer/btcfxjpy/ohlc?period=";
 
 	public GameObject candlePrefab;
     
@@ -93,11 +94,17 @@ public class Socket : MonoBehaviour {
 		double highest = 0.0;
 		double lowest = 114514191981.0;
 
+		double highestTotal = 0.0;
+		double lowestTotal = 114514191981.0;
+
 		int correctCount = 1;
 		foreach(double[] ohlc in ohlcDatas) {
 			if(ohlc == null) break;
 			if(ohlc[2] > highest) highest = ohlc[2];
 			if(ohlc[3] < lowest) lowest = ohlc[3];
+
+			if(ohlc[5] > highestTotal) highestTotal = ohlc[5];
+			else if(ohlc[5] < lowestTotal) lowestTotal = ohlc[5];
 			correctCount++;
 		}
 
@@ -123,12 +130,15 @@ public class Socket : MonoBehaviour {
 			candleComponent.high = ohlc[2];
 			candleComponent.low = ohlc[3];
 			candleComponent.close = ohlc[4];
+			candleComponent.highestTotal = highestTotal;
+			candleComponent.lowestTotal = lowestTotal;
+			candleComponent.total = ohlc[5];
 			pos.x += 0.3f;
 		}
-		this.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
+		this.transform.localScale = new Vector3(size,size*1.3f,size);
 		Vector3 parentPos = this.transform.position;
 		parentPos.y -= 1;
-		parentPos.x -= (pos.x/2)*0.02f;
+		parentPos.x -= (pos.x/2)*size;
 		this.transform.position　= parentPos;
 	}
 }
