@@ -109,7 +109,10 @@ public class Socket : MonoBehaviour {
 
 		foreach (double[] ohlc in ohlcDatas) {
 			if(ohlc == null) break;
-			candle = Instantiate(candlePrefab, pos, transform.rotation) as GameObject;
+			candle = Instantiate(candlePrefab, pos, transform.rotation);
+			candle.name = ohlc[0].ToString();
+			candle.transform.parent = transform;
+			//candle.transform.localScale = new Vector3(50, 50, 50);
 			CandleStick candleComponent = candle.GetComponent<CandleStick>();
 			candleComponent.highest = highest;
 			candleComponent.lowest = lowest;
@@ -119,6 +122,7 @@ public class Socket : MonoBehaviour {
 			candleComponent.close = ohlc[4];
 			pos.x += 0.3f;
 		}
+		this.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
 		return ohlcDatas;
 	}
 }

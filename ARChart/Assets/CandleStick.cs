@@ -32,8 +32,8 @@ public class CandleStick : MonoBehaviour {
 		float beardHeight = (float) (parentHeight * (beardPriceRange / parentPriceRange));
 		float bodyHeight = (float) (parentHeight * (bodyPriceRange / parentPriceRange));
 
-		float bodyYPos = (float) (parentHeight * (open + close) / 2 / highest);
-		float beardYPos = (float) (parentHeight * (high + low) / 2 / highest);
+		float bodyYPos = (float) (parentHeight * (open + close) / 2 / highest) / 50;
+		float beardYPos = (float) (parentHeight * (high + low) / 2 / highest) / 50;
 
 		body.transform.localScale = new Vector3(0.25f, bodyHeight, 0.25f);
 		beard.transform.localScale = new Vector3(0.05f, beardHeight, 0.05f);
