@@ -123,6 +123,8 @@ public class Socket : MonoBehaviour {
 			pos.x += 0.3f;
 		}
 		this.transform.localScale = new Vector3(0.02f, 0.02f, 0.02f);
+		pos = transform.position;
+		transform.position=new Vector3(pos.x,pos.y-1.3f,pos.z);
 		return ohlcDatas;
 	}
 }

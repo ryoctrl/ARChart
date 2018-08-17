@@ -14,7 +14,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/SimpleSpectrum/Demos/Demo_Main.unity
     guid: ef15545280b1cad4fbf2aa7b9450a083
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/ARChart.unity
+    guid: 413f4f2b65beb432ca785318de479396
   m_configObjects: {}
