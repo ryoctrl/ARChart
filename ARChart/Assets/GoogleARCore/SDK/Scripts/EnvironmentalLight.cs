@@ -20,49 +20,54 @@
 
 namespace GoogleARCore
 {
-    using UnityEngine;
-    using UnityEngine.Rendering;
+	using UnityEngine;
+	using UnityEngine.Rendering;
 
-    /// <summary>
-    /// A component that automatically adjust lighting settings for the scene
-    /// to be inline with those estimated by ARCore.
-    /// </summary>
-    [ExecuteInEditMode]
-    [HelpURL("https://developers.google.com/ar/reference/unity/class/GoogleARCore/EnvironmentalLight")]
-    public class EnvironmentalLight : MonoBehaviour
-    {
-        /// <summary>
-        /// Unity update method that sets global light estimation shader constant to match
-        /// ARCore's calculated values.
-        /// </summary>
-        public void Update()
-        {
-            if (Application.isEditor && (!Application.isPlaying ||
-                 !GoogleARCoreInternal.ARCoreProjectSettings.Instance.IsInstantPreviewEnabled))
-            {
-                // Set _GlobalColorCorrection to white in editor, if the value is not set, all materials
-                // using light estimation shaders will be black.
-                Shader.SetGlobalColor("_GlobalColorCorrection", Color.white);
+	/// <summary>
+	/// A component that automatically adjust lighting settings for the scene
+	/// to be inline with those estimated by ARCore.
+	/// </summary>
+	[ExecuteInEditMode]
+	[HelpURL("https://developers.google.com/ar/reference/unity/class/GoogleARCore/EnvironmentalLight")]
+	public class EnvironmentalLight : MonoBehaviour
+	{
 
-                // Set _GlobalLightEstimation for backward compatibility.
-                Shader.SetGlobalFloat("_GlobalLightEstimation", 1f);
-                return;
-            }
+		[SerializeField] private Light sceneLight;
+		/// <summary>
+		/// Unity update method that sets global light estimation shader constant to match
+		/// ARCore's calculated values.
+		/// </summary>
+		public void Update()
+		{
+			if (Application.isEditor && (!Application.isPlaying ||
+				 !GoogleARCoreInternal.ARCoreProjectSettings.Instance.IsInstantPreviewEnabled))
+			{
+				// Set _GlobalColorCorrection to white in editor, if the value is not set, all materials
+				// using light estimation shaders will be black.
+				Shader.SetGlobalColor("_GlobalColorCorrection", Color.white);
 
-            if (Frame.LightEstimate.State != LightEstimateState.Valid)
-            {
-                return;
-            }
+				// Set _GlobalLightEstimation for backward compatibility.
+				Shader.SetGlobalFloat("_GlobalLightEstimation", 1f);
+				return;
+			}
 
-            // Normalize pixel intensity by middle gray in gamma space.
-            const float middleGray = 0.466f;
-            float normalizedIntensity = Frame.LightEstimate.PixelIntensity / middleGray;
+			if (Frame.LightEstimate.State != LightEstimateState.Valid)
+			{
+				return;
+			}
 
-            // Apply color correction along with normalized pixel intensity in gamma space.
-            Shader.SetGlobalColor("_GlobalColorCorrection", Frame.LightEstimate.ColorCorrection * normalizedIntensity);
+			// Normalize pixel intensity by middle gray in gamma space.
+			const float middleGray = 0.466f;
+			float normalizedIntensity = Frame.LightEstimate.PixelIntensity / middleGray;
 
-            // Set _GlobalLightEstimation for backward compatibility.
-            Shader.SetGlobalFloat("_GlobalLightEstimation", normalizedIntensity);
-        }
-    }
+			// Apply color correction along with normalized pixel intensity in gamma space.
+			Shader.SetGlobalColor("_GlobalColorCorrection", Frame.LightEstimate.ColorCorrection * normalizedIntensity);
+
+			// Set _GlobalLightEstimation for backward compatibility.
+			Shader.SetGlobalFloat("_GlobalLightEstimation", normalizedIntensity);
+
+            sceneLight.intensity = normalizedIntensity*1.5f;
+
+		}
+	}
 }
