@@ -11,7 +11,7 @@ public class Socket : MonoBehaviour {
 
 	private string interval = "60";
 	
-	private string OHLC_ENDPOINT = "https://api.cryptowat.ch/markets/bitflyer/btcfxjpy/ohlc?period=60";
+	private string OHLC_ENDPOINT = "https://api.cryptowat.ch/markets/bitflyer/btcfxjpy/ohlc?periods=60";
 
 	public GameObject candlePrefab;
     
